@@ -10,12 +10,13 @@ export const googleAuth = async (req, res) => {
             })
         }
         let token = await getToken(user._id)
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "None",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+       res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+})
         return res.status(200).json(user)
     } catch (error) {
         return res.status(500).json({ message: `googlesignUp Error ${error}` })
@@ -24,10 +25,20 @@ export const googleAuth = async (req, res) => {
 
 export const LogOut = async (req, res) => {
     try {
-        await res.clearCookie("token")
-        return res.status(200).json({ message: "Logout Succesfully" })
-    } catch (error) {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            path: "/"
+        });
 
-        return res.status(500).json({ message: `Logout Error ${error}` })
+        return res.status(200).json({
+            message: "Logout Successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: `Logout Error ${error}`
+        });
     }
 }
